@@ -22,21 +22,22 @@ namespace KodProvBeamonPeople
             int variant = 0;
             while (true)
             {
-
+                
                 if (state.EvaluateIfTargetIsReached(target))
                     break;
 
                 state = listOfStates.First();
                 listOfStates.Remove(state);
 
+                //Only used for manual debugging.
                 //Console.WriteLine($"Itteration: {variant}, Five: {state.FiveLiterBottle.CurrentVolume}, Three: {state.ThreeLiterBottle.CurrentVolume}, Target: {target}, ActionTaken: {state.ActionTaken}");                
 
                 listOfStates = StateOfBottles.AddAnotherRound(listOfStates, state);
                 variant += 1;
             }
 
-            Console.WriteLine($"To find {target} requires {state.actionsTaken} steps, we evaluated {variant} different states in order to find this path.");
-            Console.WriteLine("Press Enter to exit");
+            Console.WriteLine($"To find {target} requires {state.ActionsTaken} steps, we evaluated {variant} different states in order to find this path.");
+            Console.WriteLine("Press Enter to display the actions taken");
             if (isRanByUser)
             {
                 Console.ReadLine();
@@ -54,7 +55,7 @@ namespace KodProvBeamonPeople
                 Console.ReadLine();
             }
 
-            return state.actionsTaken;
+            return state.ActionsTaken;
         }
 
         private static int GetParametersFromConsole()
@@ -62,7 +63,7 @@ namespace KodProvBeamonPeople
             Console.WriteLine("Enter a target volume to measure");
             string inputString = Console.ReadLine();
 
-            if (inputString.Length == 0)
+            if (inputString != null && inputString.Length == 0)
             {
                 Console.WriteLine("Not a valid input, try again");
                 return GetParametersFromConsole();
@@ -75,7 +76,7 @@ namespace KodProvBeamonPeople
         {
             if (state == null)
             {
-                list.Reverse();
+                list.Reverse(); //Reverse the list in order to output the actions in correct order (the state without a parent is the first action we take).
                 return list;
             }
             if (state.ActionTaken.HasValue)

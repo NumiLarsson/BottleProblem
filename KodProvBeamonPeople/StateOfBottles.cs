@@ -11,7 +11,7 @@ namespace KodProvBeamonPeople
     {
         public Bottle FiveLiterBottle;
         public Bottle ThreeLiterBottle;
-        public int actionsTaken = 0;
+        public int ActionsTaken = 0;
         public StateOfBottles ParentState;
         public ValidActions? ActionTaken;
         public StateOfBottles()
@@ -20,7 +20,12 @@ namespace KodProvBeamonPeople
             ThreeLiterBottle = new Bottle(3);
         }
 
-        public StateOfBottles(StateOfBottles parentState, ValidActions actionToTake)
+        /// <summary>
+        /// Be careful using this constructor, it's intended to be used internally.
+        /// </summary>
+        /// <param name="parentState"></param>
+        /// <param name="actionToTake"></param>
+        private StateOfBottles(StateOfBottles parentState, ValidActions actionToTake)
         {
             //TODO: Verify if simply FiveLiterBottle = ParentState.FiveLiterBottle is a copy or a reference
             //For now we play safe and copy manually
@@ -31,7 +36,7 @@ namespace KodProvBeamonPeople
 
             ActionTaken = actionToTake;
 
-            actionsTaken = parentState.actionsTaken + 1;
+            ActionsTaken = parentState.ActionsTaken + 1;
             switch (actionToTake)
             {
                 case ValidActions.Fill5:
@@ -65,11 +70,17 @@ namespace KodProvBeamonPeople
                    || target == FiveLiterBottle.CurrentVolume + ThreeLiterBottle.CurrentVolume;
         }
 
-        public StateOfBottles Perform(ValidActions action)
+        private StateOfBottles Perform(ValidActions action)
         {
             return new StateOfBottles(this, action);
         }
 
+        /// <summary>
+        ///     Adds all actions used in ValidActions to the end of the provided list.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="state"></param>
+        /// <returns>List, with all actions from ValidActions applied to the end, using the supplied state as first action.</returns>
         public static List<StateOfBottles> AddAnotherRound(List<StateOfBottles> list, StateOfBottles state)
         {
             var variant = Enum.GetValues(typeof(ValidActions)).Cast<ValidActions>();
